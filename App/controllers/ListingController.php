@@ -46,6 +46,7 @@ loadView('listings/index', [
   /**
    * Show a single listing
    * 
+   * @param $params
    * @return void
    */
 
@@ -75,6 +76,7 @@ loadView('listings/index', [
    * 
    * @return void
    */
+
   public function store()
   {
     $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
@@ -132,4 +134,30 @@ loadView('listings/index', [
       redirect('/listings');
     }
   }
+
+  /**
+   * Store data in database
+   * 
+   * @param array $params
+   * @return void
+   */
+
+   public function destroy($params) {
+    $id = $params['id'];
+
+    $params = [
+      'id' => $id
+    ];
+
+    $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
+
+    if(!$listing) {
+      ErrorController::notFound('Listing not found');
+      return;
+    }
+
+    $this->db->query('DELETE FROM listings WHERE id = :id', $params);
+
+    redirect('/listings');
+   }
 }
